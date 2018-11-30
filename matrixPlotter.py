@@ -5,15 +5,11 @@ import matplotlib.pyplot as plt
 import buildMatrix as matrix
 import numpy as np
 
-Ans = [[2,3,4],[5,4,6],[4,3,6]]
-B = [34,23,64]
-
-
 def Contour(Ans, B , x_length=1, y_length=1,name="figure", titleTxt="",debug='n'):
     x_nodes = len(Ans[1][:])
     y_nodes = len(Ans[:][1])
-    dx = x_length / x_nodes
-    dy = y_length / y_nodes
+    dx = float(x_length) / x_nodes
+    dy = float(y_length) / y_nodes
     xpos = [0] * x_nodes                      # calculating position along x
     ypos = [0] * y_nodes                      # calculating position along y
     xpos[0] = dx / 2                          # populating the first x-node
@@ -72,4 +68,3 @@ def Error(Ans, x_length = 1, name="figure"):
     plt.savefig("plots/"+name+"Err.png" , bbox_inches='tight') 
 
 
-Error(Ans)
