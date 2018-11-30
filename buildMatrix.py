@@ -3,10 +3,8 @@
 # Nov 28th 2018
 # updated Nov. 29th 2018
 
+from __future__ import division    # solution to complete division using floats
 from tqdm import tqdm
-
-
-
 
 def boundsA(x_nodes,y_nodes,debug='n'):
     """Package builds the a-matrix for finite-difference discretization"""
@@ -54,6 +52,7 @@ def CDiff(x_nodes,y_nodes,D_x, D_y, F_x, F_y, Boundary, debug="n"):
 
     if debug == 'y':  # Debugger notifies progress            
         print("finding boundaries")
+
     for i in range (x_nodes):            # boundary nodes are populated
         s_bound[i] = i                   # used to populate matricies 
         n_bound[i] = (dim - x_nodes + i)
@@ -65,13 +64,22 @@ def CDiff(x_nodes,y_nodes,D_x, D_y, F_x, F_y, Boundary, debug="n"):
         xB = "n:" + str(n_bound) + "\n"+ " s:" + str(s_bound) 
         yB = "e:" + str(e_bound) + "\n"+ " w:" + str(w_bound) 
         print("boundaries: \n",  xB, "\n",  yB)
- 
-    dim = x_nodes* y_nodes
-    
-    a_w = a_e = a_s = a_n      = [0] * dim             
-    sp_p = su_p                = 0
-    sp_W = su_W = sp_E = su_E  = [0] * dim
-    sp_S = su_S = sp_N = su_N  = [0] * dim
+    # Declaring variables
+    a_w        = [0] * dim              # Creating empty matricies for all nodes
+    a_e        = [0] * dim
+    a_s        = [0] * dim
+    a_n        = [0] * dim
+    sp_p       = 0
+    su_p       = 0
+    B          = [0] * dim
+    sp_W       = [0] * dim
+    su_W       = [0] * dim
+    sp_E       = [0] * dim
+    su_E       = [0] * dim
+    sp_S       = [0] * dim
+    su_S       = [0] * dim
+    sp_N       = [0] * dim
+    su_N       = [0] * dim
 
     #Boundaries
     phi_W = Boundary[0]
@@ -83,7 +91,8 @@ def CDiff(x_nodes,y_nodes,D_x, D_y, F_x, F_y, Boundary, debug="n"):
     a = [0] * dim                      # make a 
     for i in range(dim):               # 0-array
         a[i] = [0] * dim
-    B                          = [0] * dim
+    B   = [0] * dim
+
     # POPULATING USING CENTRAL DIFFERENCE
     print("populating central difference")
     pbar = tqdm(range(dim))              # load progress bar
@@ -159,13 +168,24 @@ def UDiff(x_nodes,y_nodes,D_x, D_y, F_x, F_y, Boundary, debug="n"):
         print("boundaries: \n",  xB, "\n",  yB)
  
     dim = x_nodes* y_nodes
-    
-    a_w = a_e = a_s = a_n      = [0] * dim             
-    sp_p = su_p                = 0
-    sp_W = su_W = sp_E = su_E  = [0] * dim
-    sp_S = su_S = sp_N = su_N  = [0] * dim
 
-    #Boundaries
+    a_w        = [0] * dim              # Creating empty matricies for all nodes
+    a_e        = [0] * dim
+    a_s        = [0] * dim
+    a_n        = [0] * dim
+    sp_p       = 0
+    su_p       = 0
+    B          = [0] * dim
+    sp_W       = [0] * dim
+    su_W       = [0] * dim
+    sp_E       = [0] * dim
+    su_E       = [0] * dim
+    sp_S       = [0] * dim
+    su_S       = [0] * dim
+    sp_N       = [0] * dim
+    su_N       = [0] * dim
+
+       #Boundaries
     phi_W = Boundary[0]
     phi_E = Boundary[1]
     phi_S = Boundary[2]
@@ -212,7 +232,7 @@ def UDiff(x_nodes,y_nodes,D_x, D_y, F_x, F_y, Boundary, debug="n"):
             sp_N[i]            = -(2*D_y + max(-(F_y[i]),0))
             su_N[i]            = (2*D_x + max(-(F_y[i]),0))* phi_N
             a[i][i]            = a[i][i] - sp_N[i]
-            B[i]  
+            B[i]               = B[i] + su_N[i]    
     return a, B
 
 
