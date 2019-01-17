@@ -5,7 +5,9 @@
 
 from __future__ import division    # solution to complete division using floats
 from tqdm import tqdm
+import numpy as np                 # 
 
+## RETURNS BOUNDARY NODES
 def boundsA(x_nodes,y_nodes,debug='n'):
     """Package builds the a-matrix for finite-difference discretization"""
     """return  w_bound, e_bound, n_bound, s_bound """
@@ -30,7 +32,7 @@ def boundsA(x_nodes,y_nodes,debug='n'):
         print("boundaries: \n",  xB, "\n",  yB)
     return w_bound, e_bound, s_bound, n_bound
 
-
+## APPLIES CENTRAL DIFFERENCE
 def CDiff(x_nodes,y_nodes,D_x, D_y, F_x, F_y, Boundary, debug="n"):
     """
     Requires:
@@ -133,7 +135,7 @@ def CDiff(x_nodes,y_nodes,D_x, D_y, F_x, F_y, Boundary, debug="n"):
     return a, B
 
 
-
+# APPLIES UPWIND DIFFERENCE
 def UDiff(x_nodes,y_nodes,D_x, D_y, F_x, F_y, Boundary, debug="n"):
     """
     Requires:
@@ -236,3 +238,50 @@ def UDiff(x_nodes,y_nodes,D_x, D_y, F_x, F_y, Boundary, debug="n"):
     return a, B
 
 
+
+
+##### M A T R I X   F U N D A M E N T A L S #####
+def meshposition(x_nodes,y_nodes,dx,dy):
+    y_pos_temp    = [0] * y_nodes          # empty matrix for  x - values along x
+    x_pos_temp    = [0] * x_nodes          # empty matrix for  y - values along y 
+    x_pos_temp[0] = dx / 2                 # this is the first x-position
+    y_pos_temp[0] = dy / 2                 # this is the first y-position
+
+    for i in range (x_nodes - 1):          # populating x - values along x
+        x_pos_temp[i+1] = x_pos_temp[i] + dx
+        
+    for i in range (y_nodes - 1):          # populating y - values along y 
+        y_pos_temp[i+1] = y_pos_temp[i] + dy
+    x_pos, y_pos = np.meshgrid(x_pos_temp, y_pos_temp)   
+    x_pos = np.array(x_pos).flatten()      # flattens matrix to 1 by x*y 
+    y_pos = np.array(y_pos).flatten()      # to strengthen consistency 
+    return x_pos, y_pos
+
+# this changes the dimensions of the A matrix - but i dont think i use it.:
+#for i in range(dim):
+
+def List2Matrix(X,x_nodes,y_nodes):
+    print("list2Matrix")
+    dim = x_nodes * y_nodes
+    Ans = [0] * x_nodes    
+    for i in range(y_nodes):
+        Ans[i] = [0] * y_nodes
+    for i in range(dim):
+        row_num, col_num = divmod(i, x_nodes)
+        Ans[row_num][col_num] = X[i]
+    return Ans
+    print("printed")
+
+def CircV(x_pos,y_pos,x_length,y_length,dim):
+    x_u   = [0] * dim                    # u(x) values are populated
+    x_v   = [0] * dim                    # u(y) values
+    r     = [0] * dim                  # value of r 
+    theta = [0] * dim                  # value of theta 
+    for i in range (dim):  
+        r    [i] = ((x_pos[i] - x_length / 2) ** 2 + ( y_pos[i] - y_length/2 ) ** 2) ** (0.5) 
+        denominat_temp = ( y_pos[i] - y_length / 2 ) 
+        numerator_temp = ( x_pos[i] - x_length / 2 ) 
+        theta[i] = np.arctan2(denominat_temp, numerator_temp) 
+        x_u  [i] = - r [i] * np.sin(theta[i])    
+        x_v  [i] = + r [i] * np.cos(theta[i]) 
+    return x_u, x_v

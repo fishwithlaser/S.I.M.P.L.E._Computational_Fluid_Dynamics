@@ -30,7 +30,6 @@ def Contour(Ans, B , x_length=1, y_length=1,name="figure", titleTxt="",debug='n'
     X, Y = np.meshgrid(xpos, ypos)
     # PLOTTING CONTOUR PLOTS
     # note: these will save in a directory called "plot"
-    titleTxt = ""
     plt.figure()
     # Graphing gradient function with a bilinear interpolation
     im = plt.imshow(Ans, interpolation='bilinear', origin='lower',
